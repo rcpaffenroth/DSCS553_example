@@ -1,0 +1,70 @@
+name: Deploy App on VM
+
+on:
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest 
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 1: SSH into the virtual machine using public key
+      - name: SSH into VM and set up environment
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.VM_HOST }}  
+          username: ${{ secrets.VM_USER }} 
+          key: ${{ secrets.SSH_PRIVATE_KEY }} 
+          port: 22002
+          script: |
+            # Step 2: Create virtual environment
+            python3 -m venv cs2_venv
+            source cs2_venv/bin/activate
+
+            # Step 3: Clone repository using a token stored in secrets
+            git clone https://github.com/rcpaffenroth/CS553_example
+            cd CS553_example
+            git pull origin monitoring
+
+            # Step 4: Install dependencies
+            pip install -r requirements.txt
+
+            # Step 5: Launch app.py in the background
+            nohup python3 app.py &
+
+            # Step 6: Install Prometheus
+            wget https://github.com/prometheus/prometheus/releases/download/v2.54.1/prometheus-2.54.1.linux-amd64.tar.gz
+            tar xvf prometheus-2.54.1.linux-amd64.tar.gz
+            cd prometheus-2.54.1.linux-amd64
+
+            # Start Prometheus
+            nohup ./prometheus &
+
+            # Step 7: Install Node Exporter
+            cd ..
+            wget https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz
+            tar xvf node_exporter-1.8.2.linux-amd64.tar.gz
+            cd node_exporter-1.8.2.linux-amd64
+            nohup ./node_exporter &
+
+            # Step 8: Install Grafana
+            sudo apt-get update
+            sudo apt-get install -y adduser libfontconfig1
+            wget https://dl.grafana.com/oss/release/grafana_10.0.3_amd64.deb
+            sudo dpkg -i grafana_10.0.3_amd64.deb
+            sudo systemctl start grafana-server
+            sudo systemctl enable grafana-server
+
+            # Step 9: Expose Grafana via ngrok
+            wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-stable-linux-amd64.zip
+            unzip ngrok-stable-linux-amd64.zip
+            ./ngrok authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
+            ./ngrok http 3000 &
+
+            # Optional: Check if services are running
+            ps aux | grep prometheus
+            ps aux | grep grafana
+            ps aux | grep ngrok
