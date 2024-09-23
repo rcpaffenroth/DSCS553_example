@@ -158,5 +158,5 @@ with gr.Blocks(css=custom_css) as demo:
     cancel_button.click(cancel_inference)
 
 if __name__ == "__main__":
-    demo.launch(share=False)  # Remove share=True because it's not supported on HF Spaces
+    demo.launch(share=True)  # Remove share=True because it's not supported on HF Spaces
 
