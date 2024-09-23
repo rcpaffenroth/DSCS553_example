@@ -28,7 +28,9 @@ ssh-keygen -f mykey -t ed25519 -N "careful"
 # One > creates
 cat mykey.pub > authorized_keys
 # two >> appends
-cat student-admin_key.pub >> authorized_keys
+# Remove to lock down machine
+#cat student-admin_key.pub >> authorized_keys
+
 chmod 600 authorized_keys
 
 echo "checking that the authorized_keys file is correct"
