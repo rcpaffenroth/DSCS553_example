@@ -3,8 +3,15 @@
 PORT=21003
 MACHINE=paffenroth-23.dyn.wpi.edu
 
+# Change to the temporary directory
+cd tmp
+
+# Add the key to the ssh-agent
+eval "$(ssh-agent -s)"
+ssh-add mykey
+
 # check that the code in installed and start up the product
-COMMAND="ssh -p ${PORT} -o StrictHostKeyChecking=no student-admin@${MACHINE}"
+COMMAND="ssh -i tmp/mykey -p ${PORT} -o StrictHostKeyChecking=no student-admin@${MACHINE}"
 
 ${COMMAND} "ls CS553_example"
 ${COMMAND} "sudo apt install -qq -y python3-venv"

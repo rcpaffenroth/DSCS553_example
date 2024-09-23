@@ -38,7 +38,7 @@ ls -l authorized_keys
 cat authorized_keys
 
 # Copy the authorized_keys file to the server
-scp -i mkkey -P ${PORT} -o StrictHostKeyChecking=no authorized_keys student-admin@${MACHINE}:~/.ssh/
+scp -i student-admin_key -P ${PORT} -o StrictHostKeyChecking=no authorized_keys student-admin@${MACHINE}:~/.ssh/
 
 # Add the key to the ssh-agent
 eval "$(ssh-agent -s)"
