@@ -1,33 +1,36 @@
 #! /bin/bash
 
-PORT=21003
+PORT=21002
 MACHINE=paffenroth-23.dyn.wpi.edu
+LOCAL_USER=simeon_krastev
+DEFAULT_KEY_NAME=ta_key
+MACHINE_USER=ta
 
 # Clean up from previous runs
-ssh-keygen -f "/home/rcpaffenroth/.ssh/known_hosts" -R "[paffenroth-23.dyn.wpi.edu]:21003"
+ssh-keygen -f "/home/${LOCAL_USER}/.ssh/known_hosts" -R "[${MACHINE}]:${PORT}"
 rm -rf tmp
 
 # Create a temporary directory
 mkdir tmp
 
 # copy the key to the temporary directory
-cp student-admin_key* tmp
+cp ${DEFAULT_KEY_NAME}* tmp
 
 # Change to the temporary directory
 cd tmp
 
 # Set the permissions of the key
-chmod 600 student-admin_key*
+chmod 600 ${DEFAULT_KEY_NAME}*
 
 # Create a unique key
-rm -f mykey*
-ssh-keygen -f mykey -t ed25519 -N "careful"
+rm -f my_key*
+ssh-keygen -f my_key -t ed25519 -N "careful"
 
 # Insert the key into the authorized_keys file on the server
 # One > creates
-cat mykey.pub > authorized_keys
+cat my_key.pub > authorized_keys
 # two >> appends
-cat student-admin_key.pub >> authorized_keys
+cat ${DEFAULT_KEY_NAME}.pub >> authorized_keys
 chmod 600 authorized_keys
 
 echo "checking that the authorized_keys file is correct"
@@ -35,24 +38,28 @@ ls -l authorized_keys
 cat authorized_keys
 
 # Copy the authorized_keys file to the server
-scp -i student-admin_key -P ${PORT} -o StrictHostKeyChecking=no authorized_keys student-admin@${MACHINE}:~/.ssh/
+scp -i ${DEFAULT_KEY_NAME} -P ${PORT} -o StrictHostKeyChecking=no authorized_keys ${MACHINE_USER}@${MACHINE}:~/.ssh/
 
 # Add the key to the ssh-agent
 eval "$(ssh-agent -s)"
-ssh-add mykey
+ssh-add my_key
 
 # Check the key file on the server
 echo "checking that the authorized_keys file is correct"
-ssh -p ${PORT} -o StrictHostKeyChecking=no student-admin@${MACHINE} "cat ~/.ssh/authorized_keys"
+ssh -i ${DEFAULT_KEY_NAME} -p ${PORT} -o StrictHostKeyChecking=no ${MACHINE_USER}@${MACHINE} "cat ~/.ssh/authorized_keys"
+
+# Clean old versions if present
+ssh -i ${DEFAULT_KEY_NAME} -p ${PORT} -o StrictHostKeyChecking=no ${MACHINE_USER}@${MACHINE} "rm log.txt && rm -rf CS553_example"
 
 # clone the repo
 git clone https://github.com/rcpaffenroth/CS553_example
+git checkout auto_deployment_test
 
 # Copy the files to the server
-scp -P ${PORT} -o StrictHostKeyChecking=no -r CS553_example student-admin@${MACHINE}:~/
+scp -P ${PORT} -o StrictHostKeyChecking=no -r CS553_example ${MACHINE_USER}@${MACHINE}:~/
 
 # check that the code in installed
-COMMAND="ssh -p ${PORT} -o StrictHostKeyChecking=no student-admin@${MACHINE}"
+COMMAND="ssh -i my_key -p ${PORT} -o StrictHostKeyChecking=no ${MACHINE_USER}@${MACHINE}"
 
 ${COMMAND} "ls CS553_example"
 ${COMMAND} "sudo apt install -qq -y python3-venv"
