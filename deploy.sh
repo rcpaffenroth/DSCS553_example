@@ -51,7 +51,7 @@ git clone https://github.com/rcpaffenroth/CS553_example
 # Copy the files to the server
 scp -P ${PORT} -o StrictHostKeyChecking=no -r CS553_example student-admin@${MACHINE}:~/
 
-# check that the code in installed
+# check that the code in installed and start up the product
 COMMAND="ssh -p ${PORT} -o StrictHostKeyChecking=no student-admin@${MACHINE}"
 
 ${COMMAND} "ls CS553_example"
