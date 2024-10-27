@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'gradio_app'
+    static_configs:
+      - targets: ['<gradio_app_container_ip>:8000']

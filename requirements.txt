@@ -6,3 +6,4 @@ gradio==4.43.*
 transformers==4.43.*
 accelerate==0.33.*
 pydantic==2.6.*
+prometheus_client==0.16.*
