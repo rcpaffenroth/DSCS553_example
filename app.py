@@ -1,7 +1,7 @@
 import gradio as gr
 from huggingface_hub import InferenceClient
-import torch
-from transformers import pipeline
+#import torch
+#from transformers import pipeline
 from prometheus_client import start_http_server, Counter, Summary
 
 # Prometheus metrics
@@ -63,6 +63,7 @@ def respond(
                 yield history + [(message, response)]  # Yield history + new response
 
         else:
+            raise NotImplementedError("API-based inference is not supported.")
             # API-based inference
             messages = [{"role": "system", "content": system_message}]
             for val in history:

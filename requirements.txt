@@ -1,9 +1,9 @@
--f https://download.pytorch.org/whl/torch_stable.html 
-torch==2.3.0+cpu
+#-f https://download.pytorch.org/whl/torch_stable.html 
+#torch==2.3.0+cpu
 
 huggingface_hub==0.23.*
 gradio==4.43.*
-transformers==4.43.*
-accelerate==0.33.*
+#transformers==4.43.*
+#accelerate==0.33.*
 pydantic==2.6.*
 prometheus_client==0.16.*
