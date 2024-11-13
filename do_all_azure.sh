@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Build the container
-docker build -t rpaff/cs553_example_azure
+docker build -t rpaff/cs553_example_azure .
 
 # Push the container to docker hub
 docker push rpaff/cs553_example_azure
