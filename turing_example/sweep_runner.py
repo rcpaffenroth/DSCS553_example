@@ -1,23 +1,25 @@
 # Import the W&B Python Library and log into W&B
 import wandb
 import click
-
+import math
+import time
 
 # 1: Define objective/training function
-def objective(config):
-    score = config.x**3 + config.y
+def objective(config,i):
+    score = math.sqrt(config['coolparameter1']**3/(i+1)) + config['coolparameter2']
     return score
 
 @click.command()
-@click.option("--x", default=1.0)
-@click.option("--y", default=1.0)
-def main(x, y):
-    wandb.init(project="cs533-turing-example")
-    wandb.config['x'] = x
-    wandb.config['y'] = y
-    
-    score = objective(wandb.config)
-    wandb.log({"score": score})
+@click.option("--coolparameter1", default=1.0)
+@click.option("--coolparameter2", default=1.0)
+@click.option("--lr", default=0.01)
+@click.option("--modeltype", default='mymodel-type')
+@click.option("--epochs", default=100)
+def main(**kw):
+    wandb.init(project="cs533-turing-example", config=kw)
+    for i in range(kw['epochs']): 
+        score = objective(kw,i)
+        wandb.log({"score": score})
 
 if __name__=="__main__":
     main()    
