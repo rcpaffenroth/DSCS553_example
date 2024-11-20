@@ -1,12 +1,12 @@
 # Import the W&B Python Library and log into W&B
 import wandb
 import click
+import random
 import math
-import time
 
 # 1: Define objective/training function
 def objective(config,i):
-    score = math.sqrt(config['coolparameter1']**3/(i+1)) + config['coolparameter2']
+    score = math.sqrt(config['coolparameter1']**3/(i+1)) + config['coolparameter2'] + random.uniform(0,0.5)
     return score
 
 @click.command()
