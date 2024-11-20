@@ -7,7 +7,7 @@
 # One job on that node
 #SBATCH -n 1
 # Please give me a GPU
-#SBATCH --gres=gpu
+##SBATCH --gres=gpu
 # Give a CPU from the following list
 ##SBATCH --constraint="A100"
 

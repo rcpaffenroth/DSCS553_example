@@ -17,4 +17,4 @@ parameters:
   #     - randyiscool
   #     - math
 program: sweep_runner.py
-project: cs553-turing-example
+project: cs553-turing-example-sweep
