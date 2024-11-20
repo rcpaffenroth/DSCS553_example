@@ -18,5 +18,5 @@
 
 # Run a python program using our local virtual environment
 cd /home/rcpaffenroth/DS553/CS553_example/turing_example
-venv/bin/wandb agent rcpaffenroth-wpi/cs553-turing-example/7rnxbz9h
+venv/bin/wandb agent rcpaffenroth-wpi/cs553-turing-example-sweep/jzldfci7
 
