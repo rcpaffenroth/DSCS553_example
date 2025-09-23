@@ -13,7 +13,11 @@ for i in $(seq 1 $num_files); do
   echo "trying group ${i} at port $((${i} + ${PORT})) "
   echo "------------------------------------------------"
   echo "------------------------------------------------"
-  ssh -i $KEY -p $((${i} + ${PORT})) -o StrictHostKeyChecking=no student-admin@${MACHINE} hostname
+  if ssh -i $KEY -p $((${i} + ${PORT})) -o StrictHostKeyChecking=no student-admin@${MACHINE} hostname; then
+    echo "group ${i} is vulnerable!"
+  else
+    echo "group ${i} is protected!"
+  fi
   echo "------------------------------------------------"
   echo "------------------------------------------------"
 done
